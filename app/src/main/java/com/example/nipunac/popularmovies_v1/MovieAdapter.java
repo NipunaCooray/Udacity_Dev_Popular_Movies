@@ -18,6 +18,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     private ArrayList<Movie> mMovieList;
 
+    private static final String baseMovieImageUrl="http://image.tmdb.org/t/p/w185/";
 
 
     @NonNull
@@ -37,7 +38,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder holder, int position) {
         Movie selectedMovie = mMovieList.get(position);
         //Picasso.get().load(selectedMovie.getPosterURL()).into(holder.mMovieImageView);
-        Picasso.get().load("http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(holder.mMovieImageView);
+        Picasso.get().load(baseMovieImageUrl+selectedMovie.getPosterURL()).into(holder.mMovieImageView);
     }
 
     @Override
