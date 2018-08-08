@@ -20,9 +20,9 @@ public final class NetworkUtils {
 
     final static String API_KEY_PARAM = "api_key";
 
-    private static final String sort_by = "popularity.desc";
+    private static String sort_by = "popularity.desc";
 
-    private static final String api_key = "#";
+    private static final String api_key = "2fb86dfa5a07ff983f498596f3de995a";
 
 
     /**
@@ -73,6 +73,8 @@ public final class NetworkUtils {
             urlConnection.disconnect();
         }
     }
+
+
 
 
 }
