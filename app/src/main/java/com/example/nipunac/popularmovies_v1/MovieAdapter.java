@@ -20,6 +20,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     private static final String baseMovieImageUrl="http://image.tmdb.org/t/p/w185/";
 
+    /*
+     * An on-click handler that we've defined to make it easy for an Activity to interface with
+     * our RecyclerView
+     */
+    private final MovieItemOnClickHandler mClickHandler;
+
+    /**
+     * The interface that receives onClick messages.
+     */
+    public interface MovieItemOnClickHandler {
+        void onClick(Movie selectedMovie);
+    }
+
+    public MovieAdapter(MovieItemOnClickHandler clickHandler) {
+        mClickHandler = clickHandler;
+    }
+
 
     @NonNull
     @Override
@@ -66,7 +83,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         @Override
         public void onClick(View v) {
-
+            int adapterPosition = getAdapterPosition();
+            Movie currentMovie = mMovieList.get(adapterPosition);
+            mClickHandler.onClick(currentMovie);
         }
     }
 

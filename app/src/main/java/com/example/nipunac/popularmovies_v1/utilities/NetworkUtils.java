@@ -74,6 +74,20 @@ public final class NetworkUtils {
         }
     }
 
+    public static void changeSortParameter(int sortBy){
+        switch(sortBy) {
+            case 0 :
+                sort_by = "popularity.desc";
+                break;
+
+            case 1 :
+                sort_by = "vote_average.desc";
+                break;
+
+
+        }
+    }
+
 
 
 

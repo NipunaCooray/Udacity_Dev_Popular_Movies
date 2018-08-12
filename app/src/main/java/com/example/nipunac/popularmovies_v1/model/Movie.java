@@ -4,12 +4,21 @@ package com.example.nipunac.popularmovies_v1.model;
 
 public class Movie  {
 
+    private String id;
     private String posterURL;
     private String originalTitle;
     private String moviePosterThumbnail;
     private String plotSynopsis;
-    private int userRating;
+    private String userRating;
     private String releaseDate;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getPosterURL() {
         return posterURL;
@@ -43,11 +52,11 @@ public class Movie  {
         this.plotSynopsis = plotSynopsis;
     }
 
-    public int getUserRating() {
+    public String getUserRating() {
         return userRating;
     }
 
-    public void setUserRating(int userRating) {
+    public void setUserRating(String userRating) {
         this.userRating = userRating;
     }
 
