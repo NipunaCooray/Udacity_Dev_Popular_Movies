@@ -25,9 +25,9 @@ public final class NetworkUtils {
 
     private static String sort_by = "popularity.desc";
 
-    private static final String api_key = "2fb86dfa5a07ff983f498596f3de995a";
+    private static final String api_key = "#";
 
-    //Trying adding api_key from build gradle, didn't work
+    //Tried adding api_key from build gradle, didn't work
     //String api = BuildConfig.ApiKey;
 
 
