@@ -3,6 +3,9 @@ package com.example.nipunac.popularmovies_v1.utilities;
 import android.net.Uri;
 import android.util.Log;
 
+
+import com.example.nipunac.popularmovies_v1.BuildConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -23,6 +26,9 @@ public final class NetworkUtils {
     private static String sort_by = "popularity.desc";
 
     private static final String api_key = "2fb86dfa5a07ff983f498596f3de995a";
+
+    //Trying adding api_key from build gradle, didn't work
+    //String api = BuildConfig.ApiKey;
 
 
     /**
