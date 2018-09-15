@@ -17,15 +17,15 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String MOVIE_API_URL = "https://api.themoviedb.org/3/discover/movie";
+    private static String MOVIE_API_URL = "https://api.themoviedb.org/3/movie/popular";
 
-    final static String SORT_BY_PARAM = "sort_by";
+    //final static String SORT_BY_PARAM = "sort_by";
+
+    //private static String sort_by = "popular";
 
     final static String API_KEY_PARAM = "api_key";
 
-    private static String sort_by = "popularity.desc";
-
-    private static final String api_key = "#";
+    private static final String api_key = "2fb86dfa5a07ff983f498596f3de995a";
 
     //Tried adding api_key from build gradle, didn't work
     //String api = BuildConfig.ApiKey;
@@ -38,7 +38,6 @@ public final class NetworkUtils {
 
     public static URL buildUrl() {
         Uri builtUri = Uri.parse(MOVIE_API_URL).buildUpon()
-                .appendQueryParameter(SORT_BY_PARAM, sort_by)
                 .appendQueryParameter(API_KEY_PARAM, api_key)
                 .build();
 
@@ -83,11 +82,11 @@ public final class NetworkUtils {
     public static void changeSortParameter(int sortBy){
         switch(sortBy) {
             case 0 :
-                sort_by = "popularity.desc";
+                MOVIE_API_URL = "https://api.themoviedb.org/3/movie/popular";
                 break;
 
             case 1 :
-                sort_by = "vote_average.desc";
+                MOVIE_API_URL = "https://api.themoviedb.org/3/movie/top_rated";
                 break;
 
 
