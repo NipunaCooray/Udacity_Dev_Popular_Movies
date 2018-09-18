@@ -27,6 +27,12 @@ public final class NetworkUtils {
 
     private static final String api_key = "2fb86dfa5a07ff983f498596f3de995a";
 
+    private static String MOVIE_API_URL_FOR_VIDEOS = "https://api.themoviedb.org/3/movie/";
+
+    private static String VIDEOS = "videos";
+
+    private static String REVIEWS = "reviews";
+
     //Tried adding api_key from build gradle, didn't work
     //String api = BuildConfig.ApiKey;
 
@@ -93,6 +99,44 @@ public final class NetworkUtils {
         }
     }
 
+
+    public static URL buildTrailerUrl(String movieID) {
+        Uri trailerUri = Uri.parse(MOVIE_API_URL_FOR_VIDEOS).buildUpon()
+                .appendPath(movieID)
+                .appendPath(VIDEOS)
+                .appendQueryParameter(API_KEY_PARAM, api_key)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(trailerUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built Trailer URI " + url);
+
+        return url;
+    }
+
+    public static URL buildReviewUrl(String movieID) {
+        Uri reviewUri = Uri.parse(MOVIE_API_URL_FOR_VIDEOS).buildUpon()
+                .appendPath(movieID)
+                .appendPath(REVIEWS)
+                .appendQueryParameter(API_KEY_PARAM, api_key)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(reviewUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built Review URI " + url);
+
+        return url;
+    }
 
 
 

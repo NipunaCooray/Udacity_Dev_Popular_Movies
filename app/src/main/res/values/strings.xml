@@ -1,9 +1,20 @@
 <resources>
+    <!-- Used in Main Activity-->
+
     <string name="app_name">Popular Movies</string>
     <string name="action_sort_popularity">Sort by popularity</string>
     <string name="action_sort_rating">Sort by rating</string>
+    <string name="error_message">An error has occurred, please try again !</string>
+
+    <!-- Used in Details Activity-->
+
     <string name="label_release_date">Release date</string>
     <string name="label_user_rating">Average rating</string>
-    <string name="error_message">An error has occurred, please try again !</string>
+    <string name="value_release_date">2018-02-15</string>
+    <string name="value_user_rating">6.5</string>
+    <string name="plot_data">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+    <string name="label_trailers">Trailers</string>
+    <string name="label_reviews">Reviews</string>
+
 
 </resources>

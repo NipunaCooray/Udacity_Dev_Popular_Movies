@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 
         HashMap<String, String> movieItem = new HashMap<String, String>();
+        movieItem.put("ID",selectedMovie.getId());
         movieItem.put("TITLE",selectedMovie.getOriginalTitle());
         movieItem.put("URL",selectedMovie.getPosterURL());
         movieItem.put("VOTES",selectedMovie.getUserRating());
