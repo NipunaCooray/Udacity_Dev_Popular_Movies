@@ -3,6 +3,8 @@ package com.example.nipunac.popularmovies_v1;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.nipunac.popularmovies_v1.database.FavouriteDatabase;
 import com.example.nipunac.popularmovies_v1.model.Movie;
 import com.example.nipunac.popularmovies_v1.model.Reviews;
 import com.example.nipunac.popularmovies_v1.model.Trailer;
@@ -48,16 +51,27 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String baseMovieImageUrl="http://image.tmdb.org/t/p/w500/";
 
+    private boolean isFavourite;
+
+    ImageView mFavouriteButton ;
+
+
+    private FavouriteDatabase mDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+
+        mDb = FavouriteDatabase.getInstance(getApplicationContext());
 
         mMovieTitleTextView =  findViewById(R.id.tv_movie_title);
         mReleaseDateTextView =  findViewById(R.id.tv_release_date);
         mVoteAverageTextView =  findViewById(R.id.tv_user_rating);
         mPlotSynopsisTextView = findViewById(R.id.tv_plot_data);
         mPoster = findViewById(R.id.iv_poster);
+        mFavouriteButton = findViewById(R.id.buttonFavourite);
 
 
         Intent intentThatStartedThisActivity = getIntent();
@@ -86,6 +100,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             }
         }
+
+        checkFavourite();
 
 
         new MovieDetailActivity.FetchTrailerTask().execute();
@@ -259,6 +275,64 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     public void makeFavourite(View view){
 
+        if(isFavourite){
+
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+
+                    final Movie movieToDelete = new Movie();
+                    movieToDelete.setId(mMovieID);
+                    mDb.movieDao().deleteMovie(movieToDelete);
+                    Log.d("Deleted","no movie");
+
+                }
+            });
+
+
+            isFavourite = false;
+            mFavouriteButton.setImageResource(R.drawable.ic_star_border_white_24px);
+
+
+        }else{
+            final Movie movieToSave = new Movie();
+            movieToSave.setId(mMovieID);
+            movieToSave.setOriginalTitle(mMovieTitle);
+            movieToSave.setPosterURL(mPosterURL);
+            movieToSave.setReleaseDate(mReleaseDate);
+            movieToSave.setUserRating(mVoteAverage);
+            movieToSave.setPlotSynopsis(mPlotSynopsis);
+
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().insertMovie(movieToSave);
+                    Log.d("Saved","movie");
+
+                }
+            });
+
+            isFavourite = true;
+            mFavouriteButton.setImageResource(R.drawable.ic_star_white_24px);
+        }
+
+    }
+
+
+    private void checkFavourite(){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Movie movie = mDb.movieDao().getMovieByID(mMovieID);
+                if(movie != null){
+                    isFavourite = true;
+                    mFavouriteButton.setImageResource(R.drawable.ic_star_white_24px);
+                }else{
+                    isFavourite = false;
+                    mFavouriteButton.setImageResource(R.drawable.ic_star_border_white_24px);
+                }
+            }
+        });
     }
 
 

@@ -63,7 +63,7 @@
                     android:paddingRight="20dp"
                     android:text="Favourite"
                     android:onClick="makeFavourite"
-                    android:src="@drawable/ic_if_common_star_favorite"
+                    android:src="@drawable/ic_star_border_white_24px"
                     android:layout_weight="0"
                     android:tint="@color/colorPrimary" />
 

@@ -1,15 +1,27 @@
 package com.example.nipunac.popularmovies_v1.model;
 
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
+@Entity (tableName = "movie")
 public class Movie  {
 
+    @PrimaryKey @NonNull
     private String id;
+
     private String posterURL;
+
     private String originalTitle;
+
     private String moviePosterThumbnail;
+
     private String plotSynopsis;
+
     private String userRating;
+
     private String releaseDate;
 
     public String getId() {

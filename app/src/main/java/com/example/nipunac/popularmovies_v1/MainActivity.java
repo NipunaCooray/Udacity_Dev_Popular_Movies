@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.nipunac.popularmovies_v1.database.FavouriteDatabase;
 import com.example.nipunac.popularmovies_v1.model.Movie;
 import com.example.nipunac.popularmovies_v1.utilities.NetworkUtils;
 import com.example.nipunac.popularmovies_v1.utilities.TheMovieDBJSonUtils;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private ProgressBar mLoadingIndicator;
 
     private TextView mErrorMessageDisplay;
+
+    private FavouriteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         loadMovieData();
+
+        mDb = FavouriteDatabase.getInstance(getApplicationContext());
 
     }
 
@@ -170,6 +175,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         } else if (id == R.id.action_sort_by_rating) {
             NetworkUtils.changeSortParameter(1);
             loadMovieData();
+            return true;
+        } else if (id == R.id.action_favourites) {
+
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+
+                    final ArrayList<Movie> favouriteMovies = new ArrayList<Movie>(mDb.movieDao().selectAllMovies());
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showMovieDataView();
+                            mMovieAdapter.setMovieData(favouriteMovies);
+                        }
+                    });
+
+
+                }
+            });
+
             return true;
         }
 

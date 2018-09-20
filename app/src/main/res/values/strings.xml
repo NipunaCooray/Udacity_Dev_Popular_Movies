@@ -4,6 +4,7 @@
     <string name="app_name">Popular Movies</string>
     <string name="action_sort_popularity">Sort by popularity</string>
     <string name="action_sort_rating">Sort by rating</string>
+    <string name="action_favourites">Favourites</string>
     <string name="error_message">An error has occurred, please try again !</string>
 
     <!-- Used in Details Activity-->
