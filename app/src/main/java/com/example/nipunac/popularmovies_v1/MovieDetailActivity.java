@@ -1,15 +1,21 @@
 package com.example.nipunac.popularmovies_v1;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -55,8 +61,9 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     ImageView mFavouriteButton ;
 
-
     private FavouriteDatabase mDb;
+
+    private static final String TAG = MovieDetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +117,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
 
+
+
     public class FetchTrailerTask extends AsyncTask<Void, Void, ArrayList<Trailer>> {
 
         URL trailerRequestURL = NetworkUtils.buildTrailerUrl(mMovieID);
@@ -138,7 +147,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             if (trailers != null) {
 
-                Log.d("Inside OnPostExecute ", "Trailers not null");
+                Log.d(TAG, "Trailers not null");
 
                 LinearLayout linearLayoutParent = (LinearLayout)findViewById(R.id.trailerList);
 
@@ -244,6 +253,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                     String content = review.getContent();
 
                     LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    LinearLayout.LayoutParams lineViewParams = new LinearLayout.LayoutParams(converttDPtoPX(60), converttDPtoPX(1));
+                    lineViewParams.setMargins(converttDPtoPX(10), 0, 0, converttDPtoPX(10));
 
                     TextView tv_author = new TextView(context);
                     tv_author.setText(author);
@@ -255,8 +266,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                     tv_content.setLayoutParams(textViewParams);
                     tv_content.setPadding(converttDPtoPX(10),0,0,converttDPtoPX(10));
 
+                    View view_shortLine = new View(context);
+                    view_shortLine.setLayoutParams(lineViewParams);
+                    view_shortLine.setBackgroundColor(fetchColor());
+
+
                     linearLayoutReviewList.addView(tv_author);
                     linearLayoutReviewList.addView(tv_content);
+                    linearLayoutReviewList.addView(view_shortLine);
 
 
                 }
@@ -265,6 +282,18 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         }
     }
+
+    private int fetchColor() {
+        TypedValue typedValue = new TypedValue();
+
+        TypedArray a = this.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });
+        int color = a.getColor(0, 0);
+
+        a.recycle();
+
+        return color;
+    }
+
 
 
     private int converttDPtoPX(int dpValue){
@@ -320,10 +349,16 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
     private void checkFavourite(){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+
+        MovieDetailViewModelFactory factory = new MovieDetailViewModelFactory(mDb,mMovieID);
+        final MovieDetailViewModel viewModel = ViewModelProviders.of(this,factory).get(MovieDetailViewModel.class);
+
+        viewModel.getMovie().observe(this, new Observer<Movie>() {
             @Override
-            public void run() {
-                Movie movie = mDb.movieDao().getMovieByID(mMovieID);
+            public void onChanged(@Nullable Movie movie) {
+
+                viewModel.getMovie().removeObserver(this);
+
                 if(movie != null){
                     isFavourite = true;
                     mFavouriteButton.setImageResource(R.drawable.ic_star_white_24px);
@@ -333,6 +368,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
     }
 
 

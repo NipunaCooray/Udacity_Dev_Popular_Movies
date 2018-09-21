@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
                 android:paddingTop="10dp"
                 android:paddingLeft="10dp" />
 
@@ -117,6 +118,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_trailers"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
                 android:paddingLeft="10dp" />
 
             <View
@@ -141,6 +144,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_reviews"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
                 android:paddingLeft="10dp" />
 
             <View

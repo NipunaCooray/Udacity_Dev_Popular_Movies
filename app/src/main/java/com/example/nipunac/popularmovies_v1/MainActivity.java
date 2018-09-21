@@ -1,9 +1,15 @@
 package com.example.nipunac.popularmovies_v1;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,11 +30,15 @@ import com.example.nipunac.popularmovies_v1.utilities.TheMovieDBJSonUtils;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieItemOnClickHandler {
 
     private RecyclerView mRecyclerView;
+
+    private GridLayoutManager layoutManager;
+
     private MovieAdapter mMovieAdapter;
 
     private ProgressBar mLoadingIndicator;
@@ -36,6 +46,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private TextView mErrorMessageDisplay;
 
     private FavouriteDatabase mDb;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final String LAYOUT_STATE_KEY = "layout_state_key";
+
+    Parcelable mSavedRecyclerLayoutState;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +64,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         /* This TextView is used to display errors and will be hidden if there are no errors */
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        GridLayoutManager layoutManager
-                = new GridLayoutManager(this,  2);
+        layoutManager = new GridLayoutManager(this,  2);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -60,11 +76,28 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
+        if(savedInstanceState != null){
+            if(savedInstanceState.containsKey(LAYOUT_STATE_KEY)){
+                mSavedRecyclerLayoutState = savedInstanceState.getParcelable(LAYOUT_STATE_KEY);
+            }
+
+
+        }
+
         loadMovieData();
 
-        mDb = FavouriteDatabase.getInstance(getApplicationContext());
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(LAYOUT_STATE_KEY, layoutManager.onSaveInstanceState());
+
+    }
+
+
 
     private void loadMovieData() {
 
@@ -146,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 showMovieDataView();
                 mMovieAdapter.setMovieData(movies);
+                mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
 
 
             } else {
@@ -177,29 +211,31 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             loadMovieData();
             return true;
         } else if (id == R.id.action_favourites) {
-
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-
-                    final ArrayList<Movie> favouriteMovies = new ArrayList<Movie>(mDb.movieDao().selectAllMovies());
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showMovieDataView();
-                            mMovieAdapter.setMovieData(favouriteMovies);
-                        }
-                    });
-
-
-                }
-            });
+            if(isOnline()){
+                retrieveFavourites();
+            }
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void retrieveFavourites(){
+
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+
+                Log.d(TAG, "Getting live data from view model");
+
+                ArrayList<Movie> favouriteMoviesArrayList = new ArrayList<Movie>(movies);
+                showMovieDataView();
+                mMovieAdapter.setMovieData(favouriteMoviesArrayList);
+            }
+        });
+
     }
 
     private void showErrorMessage() {
