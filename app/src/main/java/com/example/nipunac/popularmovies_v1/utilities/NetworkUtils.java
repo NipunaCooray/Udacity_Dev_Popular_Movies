@@ -25,7 +25,8 @@ public final class NetworkUtils {
 
     final static String API_KEY_PARAM = "api_key";
 
-    private static final String api_key = "2fb86dfa5a07ff983f498596f3de995a";
+    private static final String api_key = BuildConfig.Popular_Movies_ApiKey;;
+
 
     private static String MOVIE_API_URL_FOR_VIDEOS = "https://api.themoviedb.org/3/movie/";
 
